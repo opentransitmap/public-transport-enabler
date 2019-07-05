@@ -1,2 +1,5 @@
 build/
 .gradle/
+.project
+.settings
+config.json
