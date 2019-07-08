@@ -23,14 +23,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-// import java.lang.Class;
-// import java.lang.reflect.Constructor;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import de.schildbach.pte.AbstractNetworkProvider;
 import de.schildbach.pte.NicaraguaProvider;
+
+
 
 /**
  * @author Felix Delattre
@@ -49,7 +51,7 @@ public class Application {
         /* Read configuration about provider and additional information related from config.json */
         String provider = "", token = "";
         JSONParser parser = new JSONParser();
-        try (Reader reader = new FileReader("config.json")) {
+        try (Reader reader = new FileReader("service/config.json")) {
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             provider = (String) jsonObject.get("provider");
             token = (String) jsonObject.get("token");
@@ -59,16 +61,33 @@ public class Application {
             e.printStackTrace();
         }
 
-        // TODO: Create dynamically the provider object from configuration
-        // 
-        // Class<?> clazz = Class.forName("de.schildbach.pte." + provider + "Provider");
-        // Class<?>[] parameters = new Class[] {String.class};
-        // Constructor<?> constructor = clazz.getConstructor(parameters);
-        // Object instance = constructor.newInstance(new Object[] {authorization});
-        // if(instance instanceof AbstractNetworkProvider) {
-        //    return instance;
-        //}
-        return new NicaraguaProvider(token);
+        /* Create Provider object from dynamic class name obtained from configuration above */
+        Object object = null;
+        try {
+            Class<?> classDefinition = Class.forName("de.schildbach.pte." + provider + "Provider");
+
+            if (token != "") {
+                Constructor<?> classConstructor = classDefinition.getConstructor(String.class);
+                object = classConstructor.newInstance(new Object[] { token });
+            }
+            else {
+                object = classDefinition.newInstance();
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    
+        return (AbstractNetworkProvider) object;
     }
 }
 
