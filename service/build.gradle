@@ -20,6 +20,7 @@ dependencies {
     compile project(':enabler')
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
