@@ -17,8 +17,6 @@
 
 package de.schildbach.pte.service;
 
-import de.schildbach.pte.AbstractNetworkProvider;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -32,6 +30,7 @@ import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import de.schildbach.pte.AbstractNetworkProvider;
 
 /**
  * @author Felix Delattre
